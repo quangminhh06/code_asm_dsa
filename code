@@ -1,0 +1,152 @@
+import java.util.LinkedList;
+
+public class StudentLinkedListManager {
+
+    private LinkedList<Student> list = new LinkedList<>();
+
+    // ===== ADD =====
+    public void add(Student s) {
+        list.add(s);// append element to the end of LinkedList
+    }
+
+    // ===== DISPLAY =====
+    public void display() {
+        for (Student s : list) { // enhanced for-loop
+            s.display(); //call method of each object
+        }
+    }
+
+    // ===== EDIT =====
+    public void edit(String id, String newName, double newMarks) {
+        try {
+            boolean found = false; // flag to track whether target exists
+
+            for (Student s : list) {//traverse list
+                if (s.id.equals(id)) { // String comparison must use equals
+                    s.name = newName;
+                    s.marks = newMarks;
+                    //update name and marks
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) throw new Exception("Not found"); // if loop finishes without match → trigger exception
+
+        } catch (Exception e) {
+            System.out.println("Edit Error: " + e.getMessage());//handle error
+        }
+    }
+
+    // ===== DELETE =====
+    public void delete(String id) {
+        try {
+            boolean found = false;
+
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).id.equals(id)) {
+                    list.remove(i);// remove all elements left
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) throw new Exception("Not found");
+
+        } catch (Exception e) {
+            System.out.println("Delete Error: " + e.getMessage());
+        }
+    }
+
+    // ===== BUBBLE SORT =====
+    public void bubbleSort() {
+        try {
+            for (int i = 0; i < list.size() - 1; i++) { // after each outer loop: largest element is placed at the end
+                for (int j = 0; j < list.size() - i - 1; j++) {
+                    if (list.get(j).marks > list.get(j + 1).marks) {
+                        //Swap element
+                        Student temp = list.get(j);
+                        list.set(j, list.get(j + 1)); //move smaller element forward
+                        list.set(j + 1, temp);//place larger element backward
+                    }
+                }
+            }
+
+            display();
+
+        } catch (Exception e) {
+            System.out.println("Sort Error: " + e.getMessage());
+        }
+    }
+
+    // ===== SELECTION SORT =====
+    public void selectionSort() {
+        try {
+            for (int i = 0; i < list.size() - 1; i++) {
+                int min = i; // assume current index is minimum
+
+                for (int j = i + 1; j < list.size(); j++) {
+                    if (list.get(j).marks < list.get(min).marks) {
+                        min = j; // update new minimum index
+                    }
+                }
+
+                Student temp = list.get(i);
+                list.set(i, list.get(min));
+                list.set(min, temp);
+            }
+
+            display();
+
+        } catch (Exception e) {
+            System.out.println("Sort Error: " + e.getMessage());
+        }
+    }
+
+    // ===== LINEAR SEARCH =====
+    public void linearSearch(String id) {
+        try {
+            for (Student s : list) {
+                if (s.id.equals(id)) {
+                    s.display();
+                    return;
+                }
+            }
+
+            throw new Exception("Not found");
+
+        } catch (Exception e) {
+            System.out.println("Search Error: " + e.getMessage());
+        }
+    }
+
+    // ===== BINARY SEARCH =====
+    public void binarySearch(double marks) {
+        try {
+            bubbleSort();// pre-condition: data must be sorted
+
+            int left = 0;
+            int right = list.size() - 1;
+// left: starting index of the search range, right: ending index of the search range
+            while (left <= right) {
+                int mid = (left + right) / 2;
+// mid: middle index of the current search range
+                if (list.get(mid).marks == marks) {
+                    list.get(mid).display();
+                    return;
+ // If the middle element matches the target value, exit after finding the result
+                } else if (list.get(mid).marks < marks) {
+                    left = mid + 1;
+// If the middle value is smaller than the target, eliminate left half
+                } else {
+                    right = mid - 1;// if opposite, eliminate right half
+                }
+            }
+
+            throw new Exception("Not found");
+        } catch (Exception e) {
+            System.out.println("Search Error: " + e.getMessage());
+            //If the loop ends without finding the value, handle error
+        }
+    }
+}
